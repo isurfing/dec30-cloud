@@ -1,0 +1,46 @@
+#dubbo config
+dubbo:
+  version: @dubbo.service.version@
+  application:
+    name: @dubbo-provider.application.name@-dubbo
+    # 禁用QOS同一台机器可能会有端口冲突现象
+    qos-enable: false
+    qos-accept-foreign-ip: false
+    metadata-service-port: @dubbo-provider.dubbo.metadata-service.port@
+  protocol:
+    name: dubbo
+    port: @dubbo-provider.dubbo.port@
+  registry:
+    address: @nacos.address@
+    timeout: @dubbo-access.timeout@
+    group: @nacos-config.group@
+    parameters:
+      namespace: @nacos-config.namespace@
+  config-center:
+    address: @nacos.address@
+    timeout: @dubbo-access.timeout@
+    group: @nacos-config.group@
+    namespace: @nacos-config.namespace@
+  # 配置dubbo元数据
+  metadata-report:
+    address: @nacos.address@
+    # 设置超时时间
+    timeout: @dubbo-access.timeout@
+    # 配置 namespace
+    parameters:
+      namespace: @nacos-config.namespace@
+    # 服务分组
+    group: @nacos-config.group@
+  provider:
+    timeout: @dubbo-access.timeout@
+    group: @nacos-config.group@
+    parameters:
+      namespace: @nacos-config.namespace@
+    filter: tracing
+  consumer:
+    timeout: @dubbo-access.timeout@
+    group: @nacos-config.group@
+    parameters:
+      namespace: @nacos-config.namespace@
+    filter: tracing
+

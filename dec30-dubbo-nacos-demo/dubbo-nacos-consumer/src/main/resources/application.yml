@@ -1,0 +1,54 @@
+server:
+  port: @dubbo-consumer.port@
+#  servlet:
+#    context-path: /@dubbo-consumer.application.name@
+
+#指定配置中心环境
+spring:
+  profiles:
+    active: @project.current.env@
+  application:
+    name: @dubbo-consumer.application.name@
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+  cloud:
+    nacos:
+      discovery:
+        namespace: @nacos-config.namespace@
+        server-addr: @nacos.ip-host@
+        group: @nacos-config.group@
+      config:
+        server-addr: @nacos.ip-host@
+        namespace: @nacos-config.namespace@
+        group: @nacos-config.group@
+        file-extension: @nacos-config.extension@
+    sentinel:
+      transport:
+        port: @sentinel-client-port@
+        client-ip: @sentinel-client-ip@
+        dashboard: @sentinel-dashboard-address@
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:common-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: @zipkin-address@
+
+#日志设置
+logging:
+  file:
+    path: @logging.log.path@
+    rolling-max-size: @logging.file.max-size@
+    rolling-total-size: @logging.file.total-size@
+    rolling-max-history: @logging.file.max-history@
+  enabled-level: @logging.enabled.level@
+  config: @logging.xml.path@
+  level:
+    org: INFO
+    com.alibaba: INFO
+    io: INFO

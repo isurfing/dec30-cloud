@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.dec30</groupId>
+    <artifactId>dec30-cloud</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dec30-dubbo-nacos-demo</module>
+        <module>dec30-cloud-base</module>
+        <module>dec30-cloud-web</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <dollar.symbol>$</dollar.symbol>
+        <okio.version>3.9.0</okio.version>
+        <dubbo.version>3.2.14</dubbo.version>
+        <nacos.version>2.3.2</nacos.version>
+        <tlog.version>1.5.2</tlog.version>
+        <hutool.version>5.8.25</hutool.version>
+        <micrometer.version>1.10.6</micrometer.version>
+        <micrometer-tracing.version>1.0.5</micrometer-tracing.version>
+        <opentelemetry.version>1.36.0</opentelemetry.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
+        <mapstruct.version>1.6.0.RC1</mapstruct.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
+        <druid-spring-boot.version>1.1.21</druid-spring-boot.version>
+        <mybatis-plus-spring-boot.version>3.4.1</mybatis-plus-spring-boot.version>
+        <brave-instrumentation-dubbo.version>6.0.3</brave-instrumentation-dubbo.version>
+        <spring-cloud.version>2021.0.6</spring-cloud.version>
+        <spring-cloud-alibaba-dependencies.version>2021.0.6.0</spring-cloud-alibaba-dependencies.version>
+        <versions-maven-plugin.version>2.17.0</versions-maven-plugin.version>
+        <!-- dubbo公共参数设置-->
+        <dubbo-access.timeout>30000</dubbo-access.timeout>
+        <dubbo-scan.package>cn.dec30.**.service</dubbo-scan.package>
+        <!-- db公共参数设置-->
+        <mybatis-aliases.package>cn.dec30.**.entity</mybatis-aliases.package>
+        <mybatis-log.impl>org.apache.ibatis.logging.slf4j.Slf4jImpl</mybatis-log.impl>
+        <mybatis-mappar.location>classpath:/mapper/*-mapper.xml</mybatis-mappar.location>
+        <mysql.driver>com.mysql.cj.jdbc.Driver</mysql.driver>
+        <mysql.datasource.type>com.alibaba.druid.pool.DruidDataSource</mysql.datasource.type>
+
+        <cloud-consumer.port>9081</cloud-consumer.port>
+        <cloud-consumer.application.name>cloud-consumer</cloud-consumer.application.name>
+
+        <cloud-provider.port>9082</cloud-provider.port>
+        <cloud-provider.application.name>cloud-provider</cloud-provider.application.name>
+
+        <dubbo-consumer.port>9083</dubbo-consumer.port>
+        <dubbo-consumer.dubbo.port>29083</dubbo-consumer.dubbo.port>
+        <dubbo-consumer.application.name>dubbo-consumer</dubbo-consumer.application.name>
+        <dubbo-consumer.dubbo.metadata-service.port>29093</dubbo-consumer.dubbo.metadata-service.port>
+
+        <dubbo-provider.port>9084</dubbo-provider.port>
+        <dubbo-provider.dubbo.port>29084</dubbo-provider.dubbo.port>
+        <dubbo-provider.application.name>dubbo-provider</dubbo-provider.application.name>
+        <dubbo-provider.dubbo.metadata-service.port>29094</dubbo-provider.dubbo.metadata-service.port>
+
+        <dubbo.service.version>1.0.0</dubbo.service.version>
+
+        <sentinel-client-ip>10.211.55.2</sentinel-client-ip>
+        <sentinel-client-port>8719</sentinel-client-port>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <project.current.env>local</project.current.env>
+                <!-- nacos配置中心公共参数设置，环境区分，开发者可根据本地适应调整该参数，以便于本地调试 -->
+                <nacos-config.group>medusa${project.current.env}</nacos-config.group>
+                <nacos-config.extension>yaml</nacos-config.extension>
+                <!--ccd local-->
+                <nacos-config.namespace>a3a4e155-80b5-4c6b-afe8-2449172bee37</nacos-config.namespace>
+                <!-- nacos公共参数设置-->
+                <nacos.ip-host>local.medusa01.com:8848</nacos.ip-host>
+                <nacos.address>nacos://local.medusa01.com:8848</nacos.address>
+
+                <!-- db公共参数设置，环境区分 -->
+                <mysql.username>medusatest</mysql.username>
+                <mysql.password>ENC(ebcCfRiDHMZJhnIUAd0QQbV+w+4XF8PhJsZL0h7nmRA6sVjJc9qlvzqnoiueW8nA)</mysql.password>
+                <mysql.url>jdbc:mysql://local.medusa01.com:3306/medusatest?useCursorFetch=true&amp;serverTimezone=GMT%2B8&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;useSSL=false</mysql.url>
+                <!-- logging -->
+                <logging.file.max-size>20MB</logging.file.max-size>
+                <logging.file.total-size>2GB</logging.file.total-size>
+                <logging.file.max-history>30</logging.file.max-history>
+                <logging.enabled.level>DEBUG</logging.enabled.level>
+                <logging.xml.path><![CDATA[classpath:logback-spring.xml]]></logging.xml.path>
+                <logging.log.path>/opt/share/applogs/${dollar.symbol}{spring.application.name}/logs</logging.log.path>
+                <!-- redis -->
+                <redis.host>local.medusa01.com</redis.host>
+                <redis.port>6379</redis.port>
+                <redis.password>ENC(ebcCfRiDHMZJhnIUAd0QQbV+w+4XF8PhJsZL0h7nmRA6sVjJc9qlvzqnoiueW8nA)</redis.password>
+
+                <zipkin-address>http://localhost:9411/</zipkin-address>
+                <!--
+                https://repo1.maven.org/maven2/io/zipkin/java/zipkin-server/2.12.9/zipkin-server-2.12.9-exec.jar
+                -->
+                <sentinel-dashboard-address>local.medusa01.com:8080</sentinel-dashboard-address>
+            </properties>
+        </profile>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <project.current.env>docker</project.current.env>
+                <!-- nacos配置中心公共参数设置，环境区分，开发者可根据本地适应调整该参数，以便于本地调试 -->
+                <nacos-config.group>medusa${project.current.env}</nacos-config.group>
+                <nacos-config.extension>yaml</nacos-config.extension>
+                <!--ccd local-->
+                <nacos-config.namespace>04bb55b5-96a1-47d7-b35e-424cd4ae57c8</nacos-config.namespace>
+                <!-- nacos公共参数设置-->
+                <nacos.ip-host>docker.medusa01.com:8848</nacos.ip-host>
+                <nacos.address>nacos://docker.medusa01.com:8848</nacos.address>
+
+                <!-- db公共参数设置，环境区分 -->
+                <mysql.username>medusatest</mysql.username>
+                <mysql.password>ENC(ebcCfRiDHMZJhnIUAd0QQbV+w+4XF8PhJsZL0h7nmRA6sVjJc9qlvzqnoiueW8nA)</mysql.password>
+                <mysql.url>jdbc:mysql://docker.medusa01.com:3306/medusatest?useCursorFetch=true&amp;serverTimezone=GMT%2B8&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;useSSL=false</mysql.url>
+                <!-- logging -->
+                <logging.file.max-size>20MB</logging.file.max-size>
+                <logging.file.total-size>2GB</logging.file.total-size>
+                <logging.file.max-history>30</logging.file.max-history>
+                <logging.enabled.level>INFO</logging.enabled.level>
+                <logging.xml.path><![CDATA[classpath:logback-spring.xml]]></logging.xml.path>
+                <logging.log.path>/opt/share/applogs/${dollar.symbol}{spring.application.name}/logs</logging.log.path>
+                <!-- redis -->
+                <redis.host>docker.medusa01.com</redis.host>
+                <redis.port>6379</redis.port>
+                <redis.password>ENC(ebcCfRiDHMZJhnIUAd0QQbV+w+4XF8PhJsZL0h7nmRA6sVjJc9qlvzqnoiueW8nA)</redis.password>
+
+                <zipkin-address>http://localhost:9411/</zipkin-address>
+                <!--
+                https://repo1.maven.org/maven2/io/zipkin/java/zipkin-server/2.12.9/zipkin-server-2.12.9-exec.jar
+                -->
+                <sentinel-dashboard-address>docker.medusa01.com:8080</sentinel-dashboard-address>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.yomahub</groupId>
+                <artifactId>tlog-all-spring-boot-starter</artifactId>
+                <version>${tlog.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>hutool-core</artifactId>
+                        <groupId>cn.hutool</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>okio</artifactId>
+                        <groupId>com.squareup.okio</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-beanutils</groupId>
+                        <artifactId>commons-beanutils</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio</artifactId>
+                <version>${okio.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>nacos-client</artifactId>
+                <groupId>com.alibaba.nacos</groupId>
+                <version>${nacos.version}</version>
+            </dependency>
+            <!-- dubbo 链路跟踪-->
+            <dependency>
+                <groupId>io.zipkin.brave</groupId>
+                <artifactId>brave-instrumentation-dubbo</artifactId>
+                <version>${brave-instrumentation-dubbo.version}</version>
+            </dependency>
+            <!--注册中心 nacos 使用-->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <!--boot整合dubbo-->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-apache-dubbo3-adapter</artifactId>
+                <version>1.8.6</version>
+            </dependency>
+            <!--  druid pool -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid-spring-boot.version}</version>
+            </dependency>
+            <!-- mybatis plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-spring-boot.version}</version>
+            </dependency>
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+</project>
