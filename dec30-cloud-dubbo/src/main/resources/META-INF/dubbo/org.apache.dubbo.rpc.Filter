@@ -1,0 +1,2 @@
+providerExceptionFilter=cn.dec30.cloud.dubbo.filter.ProviderExceptionFilter
+consumerExceptionFilter=cn.dec30.cloud.dubbo.filter.ConsumerExceptionFilter

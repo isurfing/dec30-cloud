@@ -12,6 +12,7 @@
         <module>dec30-dubbo-nacos-demo</module>
         <module>dec30-cloud-base</module>
         <module>dec30-cloud-web</module>
+        <module>dec30-cloud-dubbo</module>
     </modules>
 
     <properties>

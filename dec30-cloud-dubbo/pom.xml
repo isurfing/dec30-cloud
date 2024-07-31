@@ -9,12 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dec30-dubbo-nacos-demo</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dubbo-nacos-consumer</module>
-        <module>dubbo-nacos-provider</module>
-    </modules>
+    <artifactId>dec30-cloud-dubbo</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,30 +20,25 @@
     <dependencies>
         <dependency>
             <groupId>cn.dec30</groupId>
-            <artifactId>dec30-cloud-web</artifactId>
+            <artifactId>dec30-cloud-base</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- dubbo -->
         <dependency>
-            <groupId>cn.dec30</groupId>
-            <artifactId>dec30-cloud-dubbo</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- nacos -->
-        <dependency>
-            <artifactId>nacos-client</artifactId>
-            <groupId>com.alibaba.nacos</groupId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-instrumentation-dubbo</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-apache-dubbo3-adapter</artifactId>
         </dependency>
     </dependencies>
 
