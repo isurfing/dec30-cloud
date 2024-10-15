@@ -1,5 +1,7 @@
 package cn.dec30.cloud.provider.service;
 
+import cn.dec30.cloud.base.exception.CloudException;
+import cn.dec30.cloud.dubbo.exception.RpcInvokeException;
 import cn.dec30.cloud.provider.dto.UserDTO;
 
 import java.util.List;
@@ -12,5 +14,5 @@ import java.util.List;
  */
 public interface IUserService {
 
-    List<UserDTO> getUsers();
+    List<UserDTO> getUsers() throws RpcInvokeException;
 }

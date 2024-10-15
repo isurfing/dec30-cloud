@@ -1,5 +1,14 @@
 package cn.dec30.cloud.dubbo.filter;
 
+
+import brave.Span;
+import brave.Tracer;
+import brave.propagation.CurrentTraceContext;
+import brave.propagation.TraceContext;
+import brave.rpc.RpcClientHandler;
+import brave.rpc.RpcServerHandler;
+import brave.rpc.RpcServerRequest;
+import brave.rpc.RpcTracing;
 import cn.dec30.cloud.base.exception.CloudException;
 import cn.dec30.cloud.base.exception.Error;
 import cn.dec30.cloud.dubbo.exception.RpcErrorResult;
@@ -23,13 +32,29 @@ public class ProviderExceptionFilter implements Filter, BaseFilter.Listener {
 
     private ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(ProviderExceptionFilter.class);
 
+    RpcTracing rpcTracing;
+    CurrentTraceContext currentTraceContext;
+    RpcClientHandler clientHandler;
+    RpcServerHandler serverHandler;
+    public void setRpcTracing(RpcTracing rpcTracing) {
+        if (rpcTracing == null) {
+            throw new NullPointerException("rpcTracing == null");
+        } else {
+            this.currentTraceContext = rpcTracing.tracing().currentTraceContext();
+            this.clientHandler = RpcClientHandler.create(rpcTracing);
+            this.serverHandler = RpcServerHandler.create(rpcTracing);
+            this.rpcTracing = rpcTracing;
+        }
+    }
+
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         return invoker.invoke(invocation);
     }
-
+//
     @Override
     public void onResponse(Result result, Invoker<?> invoker, Invocation invocation) {
+        Span span = this.serverHandler.handleReceive(new DubboServerRequest2(invoker, invocation));
         if (result.hasException()) {
             RpcErrorResult rpcErrorResult;
             Throwable exception = result.getException();
