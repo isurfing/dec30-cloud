@@ -17,6 +17,8 @@ public class TraceUtil {
 
     private TraceUtil() {}
 
+    private static final String ERROR = "error";
+
     public static String getTraceId() {
         return getContext().traceId();
     }
@@ -35,5 +37,13 @@ public class TraceUtil {
 
     public static Tracer getTracer() {
         return SpringUtil.getBean(Tracer.class);
+    }
+
+    public static void tagException(Exception e) {
+        getSpan().tag(ERROR, ThrowableUtil.genStackString(e));
+    }
+
+    public static void tagMessage(String message) {
+        getSpan().tag(ERROR, message);
     }
 }

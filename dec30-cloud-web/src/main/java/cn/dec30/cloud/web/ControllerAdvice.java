@@ -51,14 +51,14 @@ public final class ControllerAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(Exception.class)
     public WebResult<Void> handleException(Exception ex) {
         log.error("出现未知错误", ex);
-        TraceUtil.getSpan().error(ex);
+        TraceUtil.tagException(ex);
         return WebResult.error(CloudError.SYS_BUSY);
     }
 
     @ExceptionHandler(CloudException.class)
     public WebResult<Void> handleCloudException(CloudException ce) {
         log.error("出现业务错误", ce);
-        TraceUtil.getSpan().error(ce);
+        TraceUtil.tagException(ce);
         return WebResult.error(ce.getError());
     }
 
@@ -71,9 +71,8 @@ public final class ControllerAdvice implements ResponseBodyAdvice<Object> {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(","));
-        Error error = Error.build(CloudError.INVALID_PARAM.getCode(), msg);
-        TraceUtil.getSpan().error(new CloudException(error));
-        return WebResult.error(error);
+        TraceUtil.tagMessage(msg);
+        return WebResult.error(Error.build(CloudError.INVALID_PARAM.getCode(), msg));
     }
 
 

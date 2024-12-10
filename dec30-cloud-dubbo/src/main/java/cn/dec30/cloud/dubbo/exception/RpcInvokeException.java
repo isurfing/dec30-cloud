@@ -8,7 +8,7 @@ import cn.dec30.cloud.base.exception.Error;
  * @author medusakiller
  * @version 1.0
  * @date 2024/10/15 15:16
- * @description todo
+ * @description RPC调用异常
  */
 @Setter
 @Getter
@@ -18,6 +18,13 @@ public class RpcInvokeException extends RuntimeException {
     private String msg;
 
     public RpcInvokeException(int code, String msg) {
+        super(msg);
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public RpcInvokeException(int code, String msg, String traceMsg) {
+        super(traceMsg);
         this.code = code;
         this.msg = msg;
     }

@@ -1,7 +1,7 @@
 package cn.dec30.cloud.dubbo.filter;
 
 import cn.dec30.cloud.base.exception.CloudException;
-import cn.dec30.cloud.dubbo.exception.RpcErrorResult;
+import cn.dec30.cloud.dubbo.exception.RpcInvokeException;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
@@ -21,10 +21,12 @@ public class ConsumerExceptionFilter implements Filter, BaseFilter.Listener {
     }
 
     @Override
-    public void onResponse(Result result, Invoker<?> invoker, Invocation invocation) {
-        if(result.hasException()) {
-            RpcErrorResult error = (RpcErrorResult)result.getObjectAttachment(RpcErrorResult.ERROR_ARG_KEY);
-            result.setException(new CloudException(error.getCode(), error.getMsg()));
+    public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
+        if(appResponse.hasException()) {
+            Throwable exe = appResponse.getException();
+            if(exe instanceof RpcInvokeException rExe) {
+                appResponse.setException(new RpcInvokeException(rExe.getCode(), rExe.getMsg()));
+            }
         }
     }
 
